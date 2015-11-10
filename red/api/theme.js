@@ -22,12 +22,12 @@ var clone = require("clone");
 
 var defaultContext = {
     page: {
-        title: "Node-RED",
+        title: "Things@",
         favicon: "favicon.ico"
     },
     header: {
-        title: "Node-RED",
-        image: "red/images/node-red.png"
+        title: "Things@",
+        image: "red/images/at.png"
     },
     asset: {
         red: (process.env.NODE_ENV == "development")? "red/red.js":"red/red.min.js"
@@ -41,7 +41,7 @@ function serveFile(app,baseUrl,file) {
     try {
         var stats = fs.statSync(file);
         var url = baseUrl+path.basename(file);
-        //console.log(url,"->",file);
+        console.log(url,"->",file);
         app.get(url,function(req, res) {
             res.sendFile(file);
         });
