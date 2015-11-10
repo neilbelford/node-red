@@ -13,11 +13,7 @@
         "renameSheet": "Rename sheet",
         "confirmDelete": "Confirm delete",
         "delete": "Are you sure you want to delete '__label__'?",
-        "dropFlowHere": "Drop the flow here",
-        "config": {
-            "local": "on this sheet",
-            "global": "on all sheets"
-        }
+        "dropFlowHere": "Drop the flow here"
     },
     "menu": {
         "label": {
@@ -34,7 +30,7 @@
             "subflows": "Subflows",
             "createSubflow": "Create Subflow",
             "selectionToSubflow": "Selection to Subflow",
-            "flows": "Sheets",
+            "flows": "Tabs",
             "add": "Add",
             "rename": "Rename",
             "delete": "Delete",
@@ -103,10 +99,12 @@
         "edit": "Edit flow",
         "subflowInstances": "There is __count__ instance of this subflow",
         "subflowInstances_plural": "There are __count__ instances of this subflow",
-        "editSubflowName": "edit name",
+        "editSubflowProperties": "edit properties",
         "input": "inputs:",
         "output": "outputs:",
         "deleteSubflow": "delete subflow",
+        "info": "Description",
+        "format":"markdown format",
         "errors": {
             "noNodesSelected": "<strong>Cannot create subflow</strong>: no nodes selected",
             "multipleInputsToSelection": "<strong>Cannot create subflow</strong>: multiple inputs to selection"
@@ -198,7 +196,12 @@
         },
         "config": {
             "name": "Configuration nodes",
-            "label": "config"
+            "label": "config",
+            "local": "on this flow",
+            "global": "on all flows",
+            "none": "none",
+            "subflows": "subflows",
+            "flows": "flows"
         }
     }
 }

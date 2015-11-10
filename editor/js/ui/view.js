@@ -1065,7 +1065,7 @@ RED.view = (function() {
     function showTouchMenu(obj,pos) {
         var mdn = mousedown_node;
         var options = [];
-        options.push({name:"delete",disabled:(moving_set.length===0),onselect:function() {deleteSelection();}});
+        options.push({name:"delete",disabled:(moving_set.length===0 && selected_link === null),onselect:function() {deleteSelection();}});
         options.push({name:"cut",disabled:(moving_set.length===0),onselect:function() {copySelection();deleteSelection();}});
         options.push({name:"copy",disabled:(moving_set.length===0),onselect:function() {copySelection();}});
         options.push({name:"paste",disabled:(clipboard.length===0),onselect:function() {importNodes(clipboard,true);}});
@@ -1359,7 +1359,9 @@ RED.view = (function() {
                     var text = node.append('svg:text').attr('class','node_label').attr('x', 38).attr('dy', '.35em').attr('text-anchor','start');
                     if (d._def.align) {
                         text.attr('class','node_label node_label_'+d._def.align);
-                        text.attr('text-anchor','end');
+                        if (d._def.align === "right") {
+                            text.attr('text-anchor','end');
+                        }
                     }
 
                     var status = node.append("svg:g").attr("class","node_status_group").style("display","none");
@@ -1608,6 +1610,14 @@ RED.view = (function() {
                         redraw();
                         focusView();
                         d3.event.stopPropagation();
+
+                        var obj = d3.select(document.body);
+                        var touch0 = d3.event.touches.item(0);
+                        var pos = [touch0.pageX,touch0.pageY];
+                        touchStartTime = setTimeout(function() {
+                            touchStartTime = null;
+                            showTouchMenu(obj,pos);
+                        },touchLongPressTimeout);
                     });
                 l.append("svg:path").attr("class","link_outline link_path");
                 l.append("svg:path").attr("class","link_line link_path")

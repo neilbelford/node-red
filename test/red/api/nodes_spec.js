@@ -22,7 +22,6 @@ var sinon = require('sinon');
 var when = require('when');
 
 var redNodes = require("../../../red/nodes");
-var server = require("../../../red/server");
 var settings = require("../../../red/settings");
 
 var nodes = require("../../../red/api/nodes");
@@ -209,12 +208,11 @@ describe("nodes api", function() {
                 });
                 var getModuleInfo = sinon.stub(redNodes,'getModuleInfo');
                 getModuleInfo.onCall(0).returns(null);
-                getModuleInfo.onCall(1).returns({
-                    name:"foo",
-                    nodes:[{id:"123"}]
-                });
-                var installModule = sinon.stub(server,'installModule', function() {
-                    return when.resolve({id:"123"});
+                var installModule = sinon.stub(redNodes,'installModule', function() {
+                    return when.resolve({
+                        name:"foo",
+                        nodes:[{id:"123"}]
+                    });
                 });
 
                 request(app)
@@ -242,7 +240,7 @@ describe("nodes api", function() {
                 var getModuleInfo = sinon.stub(redNodes,'getModuleInfo',function(id) {
                     return {nodes:{id:"123"}};
                 });
-                var installModule = sinon.stub(server,'installModule', function() {
+                var installModule = sinon.stub(redNodes,'installModule', function() {
                     return when.resolve({id:"123"});
                 });
 
@@ -268,7 +266,7 @@ describe("nodes api", function() {
                 var getModuleInfo = sinon.stub(redNodes,'getModuleInfo',function(id) {
                     return null;
                 });
-                var installModule = sinon.stub(server,'installModule', function() {
+                var installModule = sinon.stub(redNodes,'installModule', function() {
                     return when.reject(new Error("test error"));
                 });
 
@@ -294,7 +292,7 @@ describe("nodes api", function() {
                 var getModuleInfo = sinon.stub(redNodes,'getModuleInfo',function(id) {
                     return null;
                 });
-                var installModule = sinon.stub(server,'installModule', function() {
+                var installModule = sinon.stub(redNodes,'installModule', function() {
                     var err = new Error("test error");
                     err.code = 404;
                     return when.reject(err);
@@ -344,7 +342,7 @@ describe("nodes api", function() {
                 var getModuleInfo = sinon.stub(redNodes,'getModuleInfo',function(id) {
                     return {nodes:[{id:"123"}]};
                 });
-                var uninstallModule = sinon.stub(server,'uninstallModule', function() {
+                var uninstallModule = sinon.stub(redNodes,'uninstallModule', function() {
                     return when.resolve({id:"123"});
                 });
 
@@ -398,7 +396,7 @@ describe("nodes api", function() {
                 var getModuleInfo = sinon.stub(redNodes,'getModuleInfo',function(id) {
                     return {nodes:[{id:"123"}]};
                 });
-                var uninstallModule = sinon.stub(server,'uninstallModule', function() {
+                var uninstallModule = sinon.stub(redNodes,'uninstallModule', function() {
                     return when.reject(new Error("test error"));
                 });
 

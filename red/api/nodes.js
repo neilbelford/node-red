@@ -15,7 +15,6 @@
  **/
 var redNodes = require("../nodes");
 var comms = require("../comms");
-var server = require("../server");
 var log = require("../log");
 var i18n = require("../i18n");
 
@@ -50,31 +49,27 @@ module.exports = {
                 res.status(400).json({error:"module_already_loaded", message:"Module already loaded"});
                 return;
             }
-            promise = server.installModule(node.module);
-        } else if (node.file) {
-            promise = server.installNode(node.file);
+            promise = redNodes.installModule(node.module);
         } else {
             log.audit({event: "nodes.install",module:node.module,error:"invalid_request"},req);
             res.status(400).json({error:"invalid_request", message:"Invalid request"});
             return;
         }
         promise.then(function(info) {
+            comms.publish("node/added",info.nodes,false);
             if (node.module) {
                 log.audit({event: "nodes.install",module:node.module},req);
-                res.json(redNodes.getModuleInfo(node.module));
-            } else if (node.file) {
-                log.audit({event: "nodes.install",file:node.file},req);
-                res.json(info.nodes[0]);
+                res.json(info);
             }
         }).otherwise(function(err) {
             if (err.code === 404) {
-                log.audit({event: "nodes.install",module:node.module,file:node.file,error:"not_found"},req);
+                log.audit({event: "nodes.install",module:node.module,error:"not_found"},req);
                 res.status(404).end();
             } else if (err.code) {
                 log.audit({event: "nodes.install",module:node.module,error:err.code},req);
                 res.status(400).json({error:err.code, message:err.message});
             } else {
-                log.audit({event: "nodes.install",module:node.module,file:node.file,error:err.code||"unexpected_error",message:err.toString()},req);
+                log.audit({event: "nodes.install",module:node.module,error:err.code||"unexpected_error",message:err.toString()},req);
                 res.status(400).json({error:err.code||"unexpected_error", message:err.toString()});
             }
         });
@@ -95,10 +90,11 @@ module.exports = {
                 res.status(404).end();
                 return;
             } else {
-                promise = server.uninstallModule(mod);
+                promise = redNodes.uninstallModule(mod);
             }
 
-            promise.then(function() {
+            promise.then(function(list) {
+                comms.publish("node/removed",list,false);
                 log.audit({event: "nodes.remove",module:mod},req);
                 res.status(204).end();
             }).otherwise(function(err) {
